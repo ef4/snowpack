@@ -388,6 +388,27 @@ export async function startServer(commandOptions: CommandOptions): Promise<Snowp
     }
   }
 
+  const matchOutputExtension: (baseName: string) => string = (function() {
+    let outputExtensions = new Set<string>();
+    for (const resolvePlugin of config.plugins) {
+      if (resolvePlugin.resolve?.output) {
+        for (let ext of resolvePlugin.resolve.output) {
+          outputExtensions.add(ext.toLowerCase());
+        }
+      }
+    }
+    let sortedOutputExtensions = [...outputExtensions].sort((a,b) => b.length - a.length);
+    return function matchOutputExtension(baseName: string): string {
+      let lowerBaseName = baseName.toLowerCase();
+      for (let ext of sortedOutputExtensions) {
+        if (lowerBaseName.endsWith(ext)) {
+          return ext;
+        }
+      }
+      return path.extname(lowerBaseName);
+    }
+  })();
+
   function loadUrl(
     reqUrl: string,
     {
@@ -514,7 +535,7 @@ export async function startServer(commandOptions: CommandOptions): Promise<Snowp
     }
 
     let requestedFile = path.parse(reqPath);
-    let requestedFileExt = requestedFile.ext.toLowerCase();
+    let requestedFileExt = matchOutputExtension(requestedFile.base);
     let responseFileExt = requestedFileExt;
     let isRoute = !requestedFileExt || requestedFileExt === '.html';
 
