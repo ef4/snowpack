@@ -344,6 +344,7 @@ ${colors.dim(
       }),
       rollupPluginCss(),
       rollupPluginReplace(generateEnvReplacements(env)),
+      ...(userDefinedRollup.plugins || []), // load user-defined plugins last
       rollupPluginCommonjs({
         extensions: ['.js', '.cjs'],
         esmExternals: externalEsm,
@@ -353,7 +354,6 @@ ${colors.dim(
       rollupPluginDependencyStats((info) => (dependencyStats = info)),
       rollupPluginNodeProcessPolyfill(env),
       polyfillNode && rollupPluginNodePolyfills(),
-      ...(userDefinedRollup.plugins || []), // load user-defined plugins last
       rollupPluginCatchUnresolved(),
       rollupPluginStripSourceMapping(),
     ].filter(Boolean) as Plugin[],
