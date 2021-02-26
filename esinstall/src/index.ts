@@ -349,7 +349,7 @@ ${colors.dim(
       } as RollupCommonJSOptions),
       rollupPluginWrapInstallTargets(!!isTreeshake, autoDetectNamedExports, installTargets, logger),
       rollupPluginDependencyStats((info) => (dependencyStats = info)),
-      rollupPluginNodeProcessPolyfill(env),
+      //rollupPluginNodeProcessPolyfill(env),
       polyfillNode && rollupPluginNodePolyfills(),
       rollupPluginCatchUnresolved(),
       rollupPluginStripSourceMapping(),
